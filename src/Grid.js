@@ -1,58 +1,43 @@
 import React from 'react';
 import './Grid.css';
 import Cell from './Cell';
-import configuration from './conf';
+import gridUtils from './services/gridUtils';
 
 class Grid extends React.Component {
 
   constructor(props) {
     super(props);
-    this.gridSize = 40;
     this.cells = [];
-    this.configuration = configuration;
+    this.gridUtils = gridUtils;
     this.state = {
-      grid: this.initGrid()
+      grid: this.gridUtils.initGrid(40),
+      gridSize: 40,
+      showHeatMap: false
     }
   }
 
-  initGrid = () => {
-    const grid = new Array(this.gridSize);
-
-    for(let i = 0; i < this.gridSize; i++) {
-      grid[i] = new Array(this.gridSize);
-      for(let j = 0; j < this.gridSize; j++) {
-        const cellIndex = (i * this.gridSize) + j;
-        grid[i][j] = {
-          id: cellIndex,
-          type: this.getCellType(cellIndex),
-          isCloud: this.isCloud(cellIndex)
-        }
-      }
-    }
-    return grid;
+  componentDidMount() {
+    this.timerID = undefined;
+     setInterval(
+      () => this.setState({
+        grid: this.gridUtils.calculateNextGeneration(this.state.grid)
+      }),
+      1000
+    );
   }
 
-  getCellType = (cellId) => {
-    if (this.configuration.iceCells.includes(cellId)) {
-      return 'ice';
-    } else if (this.configuration.cityCells.includes(cellId)) {
-      return 'city';
-    } else if (this.configuration.forrestCells.includes(cellId)) {
-      return 'forrest';
-    } else if (this.configuration.landCells.includes(cellId)) {
-      return 'land';
-    } else {
-      return 'sea';
-    }
+  componentWillUnmount() {
+    clearInterval(this.timerID);
   }
 
-  isCloud = (cellId) => {
-    return this.configuration.cloudCells.includes(cellId);
+  toggleHeatMap = () => {
+    this.setState({
+      showHeatMap: !this.state.showHeatMap
+    })
   }
-
 
   addToLand = (cellId) => {
-    if(this.cells.indexOf(cellId) === -1) {
+    if (this.cells.indexOf(cellId) === -1) {
       this.cells.push(cellId);
     }
   }
@@ -64,31 +49,30 @@ class Grid extends React.Component {
   createGrid = () => {
     const table = [];
     
-    // create rows
-    for (let i = 0; i < this.gridSize; i++) {
+    for (let i = 0; i < this.state.gridSize; i++) {
       let children = [];
-      // create columns
-      for (let j = 0; j < this.gridSize; j++) {
-        let cellIndex = (this.gridSize * i) + j;
+
+      for (let j = 0; j < this.state.gridSize; j++) {
+        let cellIndex = (this.state.gridSize * i) + j;
         children.push(
-        <td key={`row-${i}-col-${j}`}>
-        <Cell key={cellIndex} clickHandler={this.addToLand} cellData={this.state.grid[i][j]}/>
-        </td>);
+        <Cell key={cellIndex} clickHandler={this.addToLand} showHeatMap={this.state.showHeatMap} cellData={this.state.grid[i][j]}/>
+        );
       }
-      table.push(<tr key={`row-${i}`} >{children}</tr>);
+      table.push(children);
     }
     return table;
   }
 
   render = () => {
     return (
-      <div className="grid">
-        <table>
-          <tbody>
-          {this.createGrid()}
-          </tbody>
-        </table>
-      <button onClick={this.printLand}></button>
+      <div className="grid-container">
+        <div className="grid">
+        {this.createGrid()}
+        </div>
+        <div className="buttons">
+          <button onClick={this.printLand}>Print</button>
+          <button onClick={this.toggleHeatMap}>Toggle Heat Map</button>
+        </div>
       </div>
     );
   }

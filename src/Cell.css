@@ -46,3 +46,30 @@
     background: #C2BFBA;
     opacity: 0.4;
 }
+
+.temperature {
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    background: #C2BFBA;
+    opacity: 0.4;
+}
+
+.drop {
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    width: 0.9em;
+    height: 0.9em;
+    border: none;
+    -webkit-border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+    border-radius: 80% 0 55% 50% / 55% 0 80% 50%;
+    font: normal 100%/normal Arial, Helvetica, sans-serif;
+    color: rgba(0,0,0,1);
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    background: #1abc9c;
+    -webkit-transform: rotateZ(-45deg);
+    transform: rotateZ(-45deg);
+    margin-left: 0.1em;
+}

@@ -1,17 +1,18 @@
-table {
-    border-collapse: collapse;
-}
 
-table, th, td {
-    border: 1px solid black;
-}
-
-td {
-    width: 20px;
-    height: 17px;
-    padding: 0;
+.grid-container {
+    padding: 5% 25%;
 }
 
 .grid {
-    margin: 5% 25%
+    background-color: black;
+    display: grid;
+    grid-gap: 1px 1px;
+    height: 800px;
+    width: 800px;
+    grid-template-rows: repeat(40, 19px);
+    grid-template-columns: repeat(40, 19px);
+}
+
+.buttons {
+    margin-top: 20px;
 }
