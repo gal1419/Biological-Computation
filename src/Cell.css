@@ -51,7 +51,9 @@
     width: 19px;
     height: 19px;
     position: absolute;
-    background: #C2BFBA;
+}
+
+.temp-opacity {
     opacity: 0.4;
 }
 

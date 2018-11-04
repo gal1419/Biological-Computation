@@ -1,10 +1,13 @@
 import configuration from '../conf';
+import _ from 'lodash';
 
 class GridUtils {
 
-    constructor() {
-        this.configuration = configuration;
-    }
+    neighborDirs = [
+        [ -1, -1 ], [  0, -1 ], [ 1, -1 ],
+        [ -1,  0 ],             [ 1,  0 ],
+        [ -1,  1 ], [  0,  1 ], [ 1,  1 ]
+      ];
 
     initGrid = (gridSize) => {
         const grid = new Array(gridSize);
@@ -13,28 +16,30 @@ class GridUtils {
             grid[i] = new Array(gridSize);
             for(let j = 0; j < gridSize; j++) {
                 const cellIndex = (i * gridSize) + j;
-                grid[i][j] = {
+                const initObj = Object.assign({
                 id: cellIndex,
                 cellType: this.getCellType(cellIndex),
                 isCloud: this.isCloud(cellIndex),
-                isRaining: this.isCloud(cellIndex) && Math.floor(((Math.random() * 10) + 1)) > 5,
-                windDirection: this.getWindDirection(),
-                windStrength: this.getWindStrength(),
-                temperature: this.getTemperature(i)
-                }
+                temperature: this.getTemperature(i, gridSize),
+                }, );
+
+                grid[i][j] = Object.assign(
+                    initObj,
+                    initObj.cellType.includes('city') && {airPollution: this.getAirPollution()},
+                    initObj.isCloud && {isRaining: this.getIsRaining()})
             }
         }
         return grid;
     }
 
     getCellType = (cellId) => {
-        if (this.configuration.iceCells.includes(cellId)) {
+        if (configuration.iceCells.includes(cellId)) {
         return 'ice';
-        } else if (this.configuration.cityCells.includes(cellId)) {
+        } else if (configuration.cityCells.includes(cellId)) {
         return 'city' + Math.floor(((Math.random() * 3) + 1));
-        } else if (this.configuration.forrestCells.includes(cellId)) {
+        } else if (configuration.forrestCells.includes(cellId)) {
         return 'forrest' + Math.floor(((Math.random() * 3) + 1));
-        } else if (this.configuration.landCells.includes(cellId)) {
+        } else if (configuration.landCells.includes(cellId)) {
         return 'land';
         } else {
         return 'sea';
@@ -42,7 +47,7 @@ class GridUtils {
     }
 
     isCloud = (cellId) => {
-        return this.configuration.cloudCells.includes(cellId);
+        return configuration.cloudCells.includes(cellId);
     }
 
     getWindDirection = () => {
@@ -68,6 +73,14 @@ class GridUtils {
         return row - 1;
     }
 
+    getAirPollution = () => {
+        return Math.floor(((Math.random() * 10) + 1));
+    }
+
+    getIsRaining = () => {
+        return Math.floor(((Math.random() * 10) + 1)) > 5;
+    }
+
     getCellType(type) {
         if (type === 'city' || type === 'forrest') {
             return `cell ${type}` + Math.floor(((Math.random() * 3) + 1));
@@ -82,10 +95,20 @@ class GridUtils {
         for (let i = 0; i < gridSize; i++) {
             newGrid[i] = new Array(gridSize);
             for(let j = 0; j < gridSize; j++) {
-                const cellIndex = (i * gridSize) + j;
-                const newCell = Object.assign({}, grid[i][j]);
-                newCell.isCloud = this.computeCloudCell(i, j, grid);
-                newGrid[i][j] = newCell;
+                const oldCell = grid[i][j];
+                const isCloud = this.computeCloudCell(i, j, grid);
+
+                newGrid[i][j] = Object.assign(oldCell, {
+                    isCloud,
+                    isRaining: isCloud && this.getIsRaining(),
+                    temperature: this.computeNewTemperature(
+                        oldCell.temperature,
+                        this.getNeighbors(i, j, grid),
+                        oldCell.airPollution,
+                        oldCell.isRaining
+                        ),
+
+                });
             } 
         }
         return newGrid;
@@ -95,6 +118,24 @@ class GridUtils {
         const y = j === 39 ? 0 : j + 1;
         return grid[i][y].isCloud;
     }
+
+    computeNewTemperature = (currentTemp, cellNeighbors, airPollution, isRaining) => {
+        const hasHigherTemp = _.some(cellNeighbors, (neighbor) => {
+            return Math.abs(neighbor.temperature - currentTemp) > 2;
+        });
+
+        const tempWithAirPollution = airPollution ? currentTemp + (airPollution / 100) : currentTemp;
+        const tempWithRain = isRaining ? tempWithAirPollution - 0.1 : tempWithAirPollution;
+        return hasHigherTemp ? tempWithRain + 0.1 : tempWithRain;
+    }
+
+    getNeighbors = (x, y, grid) => {
+        const neighbors =  this.neighborDirs.map(([dX, dY]) => [ x + dX, y + dY ]);
+        const gridNeighbors = neighbors.map(([i, j]) => this.getFromGrid(grid, i, j));
+        return gridNeighbors.filter(v => v);
+    }
+    
+    getFromGrid = (grid, x, y) => (grid[x] || [])[y];
 }
 
 export default new GridUtils();
