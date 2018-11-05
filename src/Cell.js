@@ -12,12 +12,12 @@ class Cell extends React.Component {
         this.props.clickHandler(this.props.cellData);
     }
 
-     getTempColorforValue = (value) => {
+    getTempColorforValue = (value) => {
         const h = (1.0 - (value / 20)) * 240
         return {
             background: `hsl(${h}, 100%, 50%)`
         };
-      }
+    }
 
     render() {
         return (
@@ -25,10 +25,10 @@ class Cell extends React.Component {
                 {this.props.showClouds && this.props.cellData.isCloud && <div className='cloud'></div>}
                 {this.props.showRain && this.props.cellData.isRaining && <div className='cloud drop'></div>}
                 {this.props.showHeatMap && <div className={!this.props.showEarth ? 'temperature' : 'temperature temp-opacity'} style={this.getTempColorforValue(this.props.cellData.temperature)}></div>}
-                {this.props.showEarth && <div onClick={this.onCellClick} className={`cell ${this.props.cellData.cellType}`}></div>}
+                {this.props.showEarth && <div onClick={this.onCellClick} className={`cell ${this.props.cellData.type}`}></div>}
             </div>
         )
     }
-  }
+}
 
 export default Cell;

@@ -36,17 +36,21 @@ span {
     margin-bottom: 10px;
 }
 
+input {
+    width: 40px;
+}
+
 button {
     margin-right: 10px;
 }
 
 .start-button {
     display: block;
-    margin: 50px auto;
+    margin: 50px 29%;
 }
 
 .cell-info {
-    margin: 20px;
+    margin: 0 auto;
     padding: 0 25%;
     text-align: left;
 }
