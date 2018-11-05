@@ -7,11 +7,15 @@ class Grid extends React.Component {
 
   constructor(props) {
     super(props);
-    this.cells = [];
-    this.gridUtils = gridUtils;
+
+    this.isRunning = false;
+
     this.state = {
-      grid: this.gridUtils.initGrid(40),
+      grid: gridUtils.initGrid(40),
       gridSize: 40,
+      days: 0,
+      selectedCell: null,
+      isRunning: false,
       showHeatMap: false,
       showRain: false,
       showClouds: true,
@@ -19,19 +23,30 @@ class Grid extends React.Component {
     }
   }
 
-  componentDidMount() {
+  start = () => {
     this.timerID = undefined;
-     setInterval(
+
+    this.timerID = setInterval(
       () => this.setState({
-        grid: this.gridUtils.calculateNextGeneration(this.state.grid)
+        grid: gridUtils.calculateNextGeneration(this.state.grid),
+        days: this.state.days + 1,
+        isRunning: true
       }),
       1000
     );
   }
 
-  componentWillUnmount() {
+  stop = () => {
+    this.setState({
+      isRunning: false
+    })
     clearInterval(this.timerID);
   }
+
+  componentWillUnmount() {
+   this.stop();
+  }
+
 
   toggleEarth = () => {
     this.setState({
@@ -57,14 +72,10 @@ class Grid extends React.Component {
     })
   }
 
-  addToLand = (cellId) => {
-    if (this.cells.indexOf(cellId) === -1) {
-      this.cells.push(cellId);
-    }
-  }
-
-  printLand = () => {
-    console.log(this.cells);
+  selectCell = (cellData) => {
+    this.setState({
+      selectedCell: cellData
+    });
   }
 
   createGrid = () => {
@@ -78,7 +89,7 @@ class Grid extends React.Component {
         children.push(
         <Cell
         key={cellIndex}
-        clickHandler={this.addToLand}
+        clickHandler={this.selectCell}
         showRain={this.state.showRain}
         showHeatMap={this.state.showHeatMap}
         showClouds={this.state.showClouds}
@@ -93,16 +104,28 @@ class Grid extends React.Component {
 
   render = () => {
     return (
-      <div className="grid-container">
-        <div className="grid">
-        {this.createGrid()}
+      <div className='grid-container'>
+        <div className='info-section'>
+          <span>{`Days: ${this.state.days}`}</span>
+          <br/>
+          <span>{`Years: ${Math.floor(this.state.days / 365)}`}</span>
+          <div className='cell-info'>
+            {this.state.selectedCell && Object.keys(this.state.selectedCell).map((key) => {
+              return <div key={key} className="whiteSpaceNoWrap">{`${key}: ${this.state.selectedCell[key]}`}</div>
+              })}
+          </div>
+          <button onClick={!this.state.isRunning ? this.start : this.stop} className='start-button'>{!this.state.isRunning ? 'Start Simulation' : 'Stop Simulation'}</button>
         </div>
-        <div className="buttons">
-          <button onClick={this.printLand}>Print</button>
-          <button onClick={this.toggleEarth}>Toggle Earth</button>
-          <button onClick={this.toggleHeatMap}>Toggle Heat Map</button>
-          <button onClick={this.toggleClouds}>Toggle Clouds</button>
-          <button onClick={this.toggleRain}>Toggle Rain</button>
+        <div className='grid-section'>
+          <div className='grid'>
+            {this.createGrid()}
+          </div>
+          <div className='buttons'>
+            <button onClick={this.toggleEarth}>Toggle Earth</button>
+            <button onClick={this.toggleHeatMap}>Toggle Heat Map</button>
+            <button onClick={this.toggleClouds}>Toggle Clouds</button>
+            <button onClick={this.toggleRain}>Toggle Rain</button>
+          </div>
         </div>
       </div>
     );

@@ -1,6 +1,20 @@
 
 .grid-container {
-    padding: 5% 25%;
+    padding: 5%;
+}
+
+.info-section {
+    display: inline-block;
+    height: 100%;
+    width: 25%;
+    text-align: center;
+    vertical-align: top;
+    margin-right: 50px;
+}
+
+.grid-section {
+    display: inline-block;
+    width: 70%;
 }
 
 .grid {
@@ -14,9 +28,25 @@
 }
 
 .buttons {
-    margin-top: 20px;
+    margin: 20px 140px;
+}
+
+span {
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 button {
     margin-right: 10px;
+}
+
+.start-button {
+    display: block;
+    margin: 50px auto;
+}
+
+.cell-info {
+    margin: 20px;
+    padding: 0 25%;
+    text-align: left;
 }

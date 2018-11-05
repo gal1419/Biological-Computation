@@ -9,10 +9,7 @@ class Cell extends React.Component {
     }
 
     onCellClick = () => {
-        // this.setState({
-        //     isCloud: true
-        // });
-        // this.props.clickHandler(this.props.cellData.id);
+        this.props.clickHandler(this.props.cellData);
     }
 
      getTempColorforValue = (value) => {
@@ -28,7 +25,7 @@ class Cell extends React.Component {
                 {this.props.showClouds && this.props.cellData.isCloud && <div className='cloud'></div>}
                 {this.props.showRain && this.props.cellData.isRaining && <div className='cloud drop'></div>}
                 {this.props.showHeatMap && <div className={!this.props.showEarth ? 'temperature' : 'temperature temp-opacity'} style={this.getTempColorforValue(this.props.cellData.temperature)}></div>}
-                {this.props.showEarth && <div onClick={ () => console.log('s')} className={`cell ${this.props.cellData.cellType}`}></div>}
+                {this.props.showEarth && <div onClick={this.onCellClick} className={`cell ${this.props.cellData.cellType}`}></div>}
             </div>
         )
     }

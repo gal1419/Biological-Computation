@@ -50,15 +50,6 @@ class GridUtils {
         return configuration.cloudCells.includes(cellId);
     }
 
-    getWindDirection = () => {
-        const directions = ['north', 'south', 'east', 'west'];
-        return directions[Math.floor(((Math.random() * 4)))];
-    }
-
-    getWindStrength = () => {
-        return Math.floor(((Math.random() * 3))) + 1;
-    }
-
     getTemperature = (row, gridSize) => {
         if (row % 2 === 0) {
             if (row > gridSize / 2) {
@@ -125,7 +116,7 @@ class GridUtils {
         });
 
         const tempWithAirPollution = airPollution ? currentTemp + (airPollution / 100) : currentTemp;
-        const tempWithRain = isRaining ? tempWithAirPollution - 0.1 : tempWithAirPollution;
+        const tempWithRain = isRaining ? tempWithAirPollution - 0.2 : tempWithAirPollution;
         return hasHigherTemp ? tempWithRain + 0.1 : tempWithRain;
     }
 
