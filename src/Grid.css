@@ -37,7 +37,7 @@ span {
 }
 
 input {
-    width: 40px;
+    width: 50px;
 }
 
 button {
@@ -46,11 +46,13 @@ button {
 
 .start-button {
     display: block;
-    margin: 50px 29%;
+    margin: 20px auto;
+    width: 200px;
 }
 
 .cell-info {
     margin: 0 auto;
-    padding: 0 25%;
+    padding: 0 5%;
     text-align: left;
+    margin-bottom: 60px;
 }

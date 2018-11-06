@@ -41,10 +41,10 @@ const configuration = {
         811, 771, 732, 656, 655, 654, 693, 692, 691, 769, 810, 1233, 1236, 1238, 1237, 1235, 1234, 1274, 1275, 1277, 1278, 1239, 1279, 1273, 1313, 1314, 1316,
         1356, 1317, 1318, 1199, 1196, 1193, 1195, 1315, 244, 245, 325, 326, 286, 285, 961, 883, 1004, 1002, 963, 964, 841, 921, 922, 962, 882, 923],
     temperature: {
-        rainTemperature: 0.1,
-        temperatureRaise: 0.1,
-        forrestTemperature: 0.1,
-        pollutionTemperature: 0.1
+        rainTemperature: 0.01,
+        temperatureRaise: 0.01,
+        forrestTemperature: 0.01,
+        pollutionTemperature: 0.01
     }
 }
 

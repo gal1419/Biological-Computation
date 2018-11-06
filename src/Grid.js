@@ -15,7 +15,7 @@ class Grid extends React.Component {
     this.state = Object.assign({
       grid: gridUtils.initGrid(40),
       gridSize: 40,
-      speed: 500,
+      speed: 250,
       days: 0,
       selectedCell: null,
       isRunning: false,
@@ -44,6 +44,13 @@ class Grid extends React.Component {
       isRunning: false
     })
     clearInterval(this.timerID);
+  }
+
+  restart = () => {
+    this.stop();
+    this.setState({
+      grid: gridUtils.initGrid(40)
+    })
   }
 
   componentWillUnmount() {
@@ -133,11 +140,12 @@ class Grid extends React.Component {
             <br />
             {Object.keys(this.state.temperatureValues).map((key) => {
               return <div key={key} style={{ marginTop: '10px' }}>
-                <span><strong>{`${key}: `}</strong></span> <input type='number' min='0' max='5' name={key} onChange={this.onInputChange.bind(this)} defaultValue={this.state.temperatureValues[key]}></input>
+                <div style={{display: 'inline-block', width: '200px', marginRight: '10px'}}><strong>{`${key}: `}</strong></div> <input type='number' min='0.01' max='1' step='0.01' name={key} onChange={this.onInputChange.bind(this)} defaultValue={this.state.temperatureValues[key]}></input>
               </div>
             })}
           </div>
           <button onClick={!this.state.isRunning ? this.start : this.stop} className='start-button'>{!this.state.isRunning ? 'Start Simulation' : 'Stop Simulation'}</button>
+          <button onClick={this.restart} className='start-button'>Restart Simulation</button>
         </div>
         <div className='grid-section'>
           <div className='grid'>

@@ -81,7 +81,7 @@ class GridUtils {
         });
 
         if (numOfRainingNeighbors === 0) {
-            return Math.floor(((Math.random() * 10) + 1)) > 7;
+            return Math.floor(((Math.random() * 10) + 1)) > 5;
         } else if (numOfRainingNeighbors => 4) {
             return false;
         }
@@ -120,9 +120,9 @@ class GridUtils {
                 });
 
                 if (oldCell.iceLevel) {
-                    const iceLevel = this.computeIceLevel(oldCell.iceLevel, oldCell.temperature);
+                    newCell.iceLevel = this.computeIceLevel(oldCell.iceLevel, oldCell.temperature);;
 
-                    if (iceLevel < 0) {
+                    if (newCell.iceLevel === 0) {
                         newCell.type = 'sea';
                         delete newCell.iceLevel;
                     }
@@ -134,9 +134,7 @@ class GridUtils {
     }
 
     computeIceLevel = (iceLevel, temperature) => {
-        return {
-            iceLevel: temperature > 0 ? iceLevel - 1 : iceLevel
-        }
+        return temperature > 0 ? iceLevel - 1 : iceLevel;
     }
 
     computeCloudCell = (i, j, grid) => {
@@ -149,9 +147,9 @@ class GridUtils {
             return Math.abs(neighbor.temperature - currentTemp) > 2;
         });
 
-        const tempWithAirPollution = airPollution ? currentTemp + (airPollution / 100) + configuration.temperature.pollutionTemperature : currentTemp;
+        const tempWithAirPollution = airPollution ? currentTemp + (airPollution / 1000) + configuration.temperature.pollutionTemperature : currentTemp;
         const tempWithRain = isRaining ? tempWithAirPollution - configuration.temperature.rainTemperature : tempWithAirPollution;
-        const tempWithForrest = isForrest ? tempWithRain + configuration.temperature.forrestTemperature : tempWithRain;
+        const tempWithForrest = isForrest ? tempWithRain - configuration.temperature.forrestTemperature : tempWithRain;
         return hasHigherTemp ? tempWithForrest + configuration.temperature.temperatureRaise : tempWithForrest;
     }
 

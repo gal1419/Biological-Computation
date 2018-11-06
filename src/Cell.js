@@ -21,11 +21,11 @@ class Cell extends React.Component {
 
     render() {
         return (
-            <div className='cell' title={this.props.cellData.id}>
+            <div className='cell' onClick={this.onCellClick} title={this.props.cellData.id}>
                 {this.props.showClouds && this.props.cellData.isCloud && <div className='cloud'></div>}
                 {this.props.showRain && this.props.cellData.isRaining && <div className='cloud drop'></div>}
                 {this.props.showHeatMap && <div className={!this.props.showEarth ? 'temperature' : 'temperature temp-opacity'} style={this.getTempColorforValue(this.props.cellData.temperature)}></div>}
-                {this.props.showEarth && <div onClick={this.onCellClick} className={`cell ${this.props.cellData.type}`}></div>}
+                {this.props.showEarth && <div className={`cell ${this.props.cellData.type}`}></div>}
             </div>
         )
     }
