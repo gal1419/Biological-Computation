@@ -17,13 +17,15 @@ class GridUtils {
             for (let j = 0; j < gridSize; j++) {
                 const cellIndex = (i * gridSize) + j;
                 const type = this.getCellType(cellIndex);
+                const temperature = this.getTemperature(i, gridSize);
                 const isIce = type === 'ice';
 
                 const initObj = Object.assign({}, {
                     id: cellIndex,
                     type: this.getCellType(cellIndex),
                     isCloud: this.isCloud(cellIndex),
-                    temperature: this.getTemperature(i, gridSize),
+                    temperature: temperature,
+                    initialTemperature: temperature,
                 }, isIce && { iceLevel: 50 });
 
                 grid[i][j] = Object.assign(
@@ -32,6 +34,7 @@ class GridUtils {
                     initObj.isCloud && { isRaining: this.getIsRaining() })
             }
         }
+        this.graphBuilder(grid, 1);
         return grid;
     }
 
@@ -95,7 +98,7 @@ class GridUtils {
         return `cell ${type}`;
     }
 
-    calculateNextGeneration = (grid) => {
+    calculateNextGeneration = (grid, day) => {
         const gridSize = grid.length;
         const newGrid = new Array(gridSize);
 
@@ -106,6 +109,7 @@ class GridUtils {
                 const oldCell = grid[i][j];
                 const isCloud = this.computeCloudCell(i, j, grid);
                 const neighbors = this.getNeighbors(i, j, grid);
+                const airPollution = oldCell.airPollution;
 
                  newCell = Object.assign(oldCell, {
                     isCloud,
@@ -120,21 +124,27 @@ class GridUtils {
                 });
 
                 if (oldCell.iceLevel) {
-                    newCell.iceLevel = this.computeIceLevel(oldCell.iceLevel, oldCell.temperature);;
+                    newCell.iceLevel = this.computeIceLevel(newCell.temperature, oldCell);;
 
                     if (newCell.iceLevel === 0) {
                         newCell.type = 'sea';
                         delete newCell.iceLevel;
                     }
                 }
+
+                if (airPollution) {
+                    newCell.newAirPollution = configuration.temperature.pollutionTemperature.value + (airPollution / 1000);
+                }
+
                 newGrid[i][j] = newCell;
             }
         }
+        this.graphBuilder(newGrid, day);
         return newGrid;
     }
 
-    computeIceLevel = (iceLevel, temperature) => {
-        return temperature > 0 ? iceLevel - 1 : iceLevel;
+    computeIceLevel = (newTemp, oldCell) => {
+        return newTemp - oldCell.initialTemperature > 2 ? oldCell.iceLevel - 1 : oldCell.iceLevel;
     }
 
     computeCloudCell = (i, j, grid) => {
@@ -143,14 +153,22 @@ class GridUtils {
     }
 
     computeNewTemperature = (currentTemp, cellNeighbors, airPollution, isForrest, isRaining) => {
-        const hasHigherTemp = _.some(cellNeighbors, (neighbor) => {
-            return Math.abs(neighbor.temperature - currentTemp) > 2;
+        const neighborsSumTemp = _.sumBy(cellNeighbors, (neighbor) => {
+            return neighbor.temperature;
         });
+        const tempAverage =  neighborsSumTemp / cellNeighbors.length;
+        let tempReducers = isForrest ? configuration.temperature.forrestTemperature.value : 0;
+        tempReducers +=  isRaining ? configuration.temperature.rainTemperature.value : 0;
 
-        const tempWithAirPollution = airPollution ? currentTemp + (airPollution / 1000) + configuration.temperature.pollutionTemperature : currentTemp;
-        const tempWithRain = isRaining ? tempWithAirPollution - configuration.temperature.rainTemperature : tempWithAirPollution;
-        const tempWithForrest = isForrest ? tempWithRain - configuration.temperature.forrestTemperature : tempWithRain;
-        return hasHigherTemp ? tempWithForrest + configuration.temperature.temperatureRaise : tempWithForrest;
+        let tempRaisers = airPollution ? configuration.temperature.pollutionTemperature.value + (airPollution / 1000) : 0;
+
+        if (tempAverage  - currentTemp <= 0) {
+            tempReducers += configuration.temperature.temperatureRaise.value;
+        } else {
+            tempRaisers += configuration.temperature.temperatureRaise.value;
+        }
+
+        return currentTemp - tempReducers + tempRaisers;
     }
 
     getNeighbors = (x, y, grid) => {
@@ -160,6 +178,20 @@ class GridUtils {
     }
 
     getFromGrid = (grid, x, y) => (grid[x] || [])[y];
+
+    graphBuilder = (grid, day) => {
+        const flattenGrid = _.flattenDeep(grid);
+        const temperature = _.meanBy(flattenGrid, 'temperature');
+        const airPollution = _.meanBy(flattenGrid, 'newAirPollution');
+        const rain = _.sumBy(flattenGrid, cell => cell.isRaining ? 1 : 0);
+
+       configuration.graphValues.push({
+           day,
+           temperature,
+           airPollution,
+           rain
+       });
+    }
 }
 
 export default new GridUtils();
