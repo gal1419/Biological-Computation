@@ -4,7 +4,7 @@ import _ from 'lodash';
 import './Grid.css';
 import Cell from './Cell';
 import {LineChart, YAxis, XAxis, CartesianGrid, Line, Tooltip, Legend} from 'recharts';
-import gridUtils from './services/GridUtils';
+import gridUtils from './services/gridUtils';
 
 class Grid extends React.Component {
 
