@@ -11,8 +11,6 @@ class Grid extends React.Component {
   constructor(props) {
     super(props);
 
-    this.isRunning = false;
-
     this.state = Object.assign({
       grid: gridUtils.initGrid(40),
       gridSize: 40,
@@ -42,10 +40,11 @@ class Grid extends React.Component {
   stop = () => {
     clearInterval(this.timerID);
     clearInterval(this.graphTimerId);
+    this.showGraph = false;
     this.setState({
-      isRunning: false
+      isRunning: false,
+      showGraph: false
     })
-    clearInterval(this.timerID);
   }
 
   restart = () => {
@@ -111,11 +110,14 @@ class Grid extends React.Component {
     Object.keys(configuration.temperature).forEach(key => configuration.temperature[key].value = 0.01);
   }
 
-  generateGraphB = () => {
+  generateGraphC = () => {
     const airPollution = 'pollutionTemperature';
-    console.log(this);
     this.restart();
     this.start();
+   
+    this.setState({
+      showGraph: true
+    })
 
     this.graphTimerId = setInterval(
       () => {
@@ -133,6 +135,9 @@ class Grid extends React.Component {
   generateGraphB = () => {
     this.restart();
     this.start();
+    this.setState({
+      showGraph: true
+    })
   }
 
   createGrid = () => {
