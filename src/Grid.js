@@ -255,7 +255,7 @@ class Grid extends React.Component {
             <button onClick={this.toggleRain}>Toggle Rain</button>
           </div>
         </div>
-        {this.showGraph && this.state.days >= 365 && (
+        {this.state.showGraph && this.state.days >= 365 && (
           <div className="charts">
             <div>Value across 1 year</div>
             <LineChart
@@ -290,7 +290,7 @@ class Grid extends React.Component {
             </LineChart>
           </div>
         )}
-        {this.showGraph && this.state.days < 365 && (
+        {this.state.showGraph && this.state.days < 365 && (
           <div>Grpahs Will Be Displayed HERE. Wait for 1 Year to pass...</div>
         )}
       </div>

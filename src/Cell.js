@@ -4,7 +4,6 @@ import "./Cell.css";
 class Cell extends React.Component {
   constructor(props) {
     super(props);
-    //this.state = {...props.cellData}
   }
 
   onCellClick = () => {
