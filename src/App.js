@@ -1,13 +1,10 @@
-import React from 'react';
-import './App.css';
-import Grid from './Grid';
+import React from "react";
+import "./App.css";
+import Grid from "./Grid";
 
 class App extends React.Component {
-  
   render() {
-    return (
-    <Grid />
-    );
+    return <Grid />;
   }
 }
 

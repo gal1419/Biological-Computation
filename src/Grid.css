@@ -1,58 +1,57 @@
-
 .grid-container {
-    padding: 5%;
+  padding: 5%;
 }
 
 .info-section {
-    display: inline-block;
-    height: 100%;
-    width: 25%;
-    text-align: center;
-    vertical-align: top;
-    margin-right: 50px;
+  display: inline-block;
+  height: 100%;
+  width: 25%;
+  text-align: center;
+  vertical-align: top;
+  margin-right: 50px;
 }
 
 .grid-section {
-    display: inline-block;
-    width: 70%;
+  display: inline-block;
+  width: 70%;
 }
 
 .grid {
-    background-color: black;
-    display: grid;
-    grid-gap: 1px 1px;
-    height: 800px;
-    width: 800px;
-    grid-template-rows: repeat(40, 19px);
-    grid-template-columns: repeat(40, 19px);
+  background-color: black;
+  display: grid;
+  grid-gap: 1px 1px;
+  height: 800px;
+  width: 800px;
+  grid-template-rows: repeat(40, 19px);
+  grid-template-columns: repeat(40, 19px);
 }
 
 .buttons {
-    margin: 20px 140px;
+  margin: 20px 140px;
 }
 
 span {
-    text-align: center;
-    margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 input {
-    width: 65px;
+  width: 65px;
 }
 
 button {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .start-button {
-    display: block;
-    margin: 20px auto;
-    width: 200px;
+  display: block;
+  margin: 20px auto;
+  width: 200px;
 }
 
 .cell-info {
-    margin: 0 auto;
-    padding: 0 5%;
-    text-align: left;
-    margin-bottom: 60px;
+  margin: 0 auto;
+  padding: 0 5%;
+  text-align: left;
+  margin-bottom: 60px;
 }
