@@ -1,7 +1,6 @@
 import React from "react";
 import configuration from "./conf";
 import _ from "lodash";
-import "./Grid.css";
 import Cell from "./Cell";
 import {
   LineChart,
