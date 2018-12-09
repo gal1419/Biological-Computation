@@ -1,23 +1,26 @@
-
 .empty {
-    background: wheat;
+  background: wheat;
 }
 
 .robot {
-    background: grey;
+  background: grey;
 }
 
 .target {
-    background: green;
+  background: green;
 }
 
 .obstacle {
-    background: brown;
+  background: brown;
+}
+
+.path {
+  background: orange;
 }
 
 .environment {
-    display: grid;
-    grid-gap: 1px 1px;
-    grid-template-rows: repeat(30, 19px);
-    grid-template-columns: repeat(30, 19px);
+  display: grid;
+  grid-gap: 1px 1px;
+  grid-template-rows: repeat(30, 19px);
+  grid-template-columns: repeat(30, 19px);
 }
